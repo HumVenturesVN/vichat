@@ -77,7 +77,7 @@ h1, h2, h3 { margin: 0; text-wrap: balance; line-height: 1.2; }
 .inp { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
 .inp label { font-size: 16px; font-weight: 700; }
 .inp .row { display: flex; align-items: center; gap: 8px; }
-.inp input[type=number] { font: inherit; font-size: 22px; font-weight: 700; width: 100%; min-width: 0; padding: 8px 12px; border: 2px solid var(--line); border-radius: 12px; background: #fff; color: var(--ink); font-variant-numeric: tabular-nums; }
+.inp input.num { font: inherit; font-size: 22px; font-weight: 700; width: 100%; min-width: 0; padding: 8px 12px; border: 2px solid var(--line); border-radius: 12px; background: #fff; color: var(--ink); font-variant-numeric: tabular-nums; }
 .unit { font-size: 17px; color: var(--ink-soft); white-space: nowrap; }
 .step { display: flex; align-items: center; gap: 6px; }
 .step button { font: inherit; font-size: 24px; font-weight: 800; width: 44px; height: 44px; border-radius: 12px; border: 2px solid var(--c); background: #fff; color: var(--c); cursor: pointer; flex: none; }
@@ -86,6 +86,13 @@ h1, h2, h3 { margin: 0; text-wrap: balance; line-height: 1.2; }
 .unit-toggle .chip { padding: 4px 12px; min-height: 36px; font-size: 15px; }
 .unit-toggle .chip[aria-pressed="true"] { background: var(--c); border-color: var(--c); }
 
+.prods { display: flex; flex-direction: column; gap: 12px; }
+.prod { display: flex; flex-direction: column; gap: 10px; }
+.prod + .prod { border-top: 1px dashed var(--line); padding-top: 12px; }
+.prod-head { display: flex; gap: 8px; align-items: center; }
+.prod-head input { font: inherit; font-size: 16px; flex: 1; min-width: 0; padding: 6px 10px; border: 2px solid var(--line); border-radius: 10px; background: #fff; color: var(--ink); }
+.prod-head .rm { font: inherit; font-size: 15px; font-weight: 700; border: 0; background: transparent; color: var(--bad); cursor: pointer; min-height: 40px; padding: 0 6px; white-space: nowrap; }
+.add { font: inherit; font-size: 16px; font-weight: 700; align-self: flex-start; border: 2px dashed var(--c); color: var(--c); background: #fff; border-radius: 999px; padding: 8px 16px; min-height: 44px; cursor: pointer; }
 .result { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
 .total { font-size: 30px; font-weight: 800; color: var(--c); font-variant-numeric: tabular-nums; }
 .total small { font-size: 17px; font-weight: 600; color: var(--ink-soft); }
@@ -132,7 +139,7 @@ footer { font-size: 15px; color: var(--ink-soft); text-align: center; padding-in
 
 <div class="wrap">
   <header class="hero">
-    <img class="brand" src="assets/logo-ngang-trang.png" width="899" height="295" alt="HumVentures">
+    <img class="brand" src="assets/logo-ngang-trang.png" width="1001" height="329" alt="HumVentures">
     <h1>Tự cân liều vi chất</h1>
     <p>Gõ hàm lượng ghi trên nhãn và số viên bạn uống mỗi ngày. Trang tự cộng tổng, báo màu và sắp lịch uống theo nhịp làm việc của bạn.</p>
     <span class="privacy">Số liệu lưu ngay trên điện thoại của bạn. Lần sau mở lại không cần nhập lại.</span>
@@ -181,7 +188,7 @@ footer { font-size: 15px; color: var(--ink-soft); text-align: center; padding-in
     <h2 id="h-vd">Chỉ số Vitamin D của tôi</h2>
     <p class="hint">Lấy kết quả xét nghiệm 25(OH)D gần nhất. Thang ví von theo chia sẻ của BS Trần Văn Phúc.</p>
     <div class="vd-input">
-      <input id="vdLevel" type="number" inputmode="decimal" min="0" placeholder="Ví dụ 42" aria-label="Chỉ số Vitamin D">
+      <input id="vdLevel" type="text" inputmode="decimal" autocomplete="off" placeholder="Ví dụ 42" aria-label="Chỉ số Vitamin D">
       <div class="unit-toggle chips" data-group="vdunit" style="--c: var(--vd)">
         <button class="chip" type="button" data-v="ng">ng/ml</button>
         <button class="chip" type="button" data-v="nmol">nmol/L</button>
@@ -228,14 +235,14 @@ footer { font-size: 15px; color: var(--ink-soft); text-align: center; padding-in
   const N = [
     { id: 'mg', name: 'Magie', color: 'var(--mg)', unit: 'mg', per: 'Magie trong 1 viên', hint: 'Nhìn số sau chữ "tương đương", ví dụ "Magie lactat 470 mg (tương đương 47 mg magie)" là 47 mg.' },
     { id: 'ca', name: 'Canxi', color: 'var(--ca)', unit: 'mg', per: 'Canxi trong 1 viên', hint: 'Ví dụ "Calci carbonat 1250 mg (tương đương 500 mg calci)" là 500 mg.' },
-    { id: 'vd', name: 'Vitamin D', color: 'var(--vd)', unit: 'IU', per: 'Vitamin D trong 1 viên', hint: 'Nhớ cộng cả D3 có sẵn trong viên canxi hoặc viên tổng hợp. 1 mcg bằng 40 IU.', units: ['IU', 'mcg'] },
+    { id: 'vd', name: 'Vitamin D', color: 'var(--vd)', unit: 'IU', per: 'Vitamin D trong 1 viên', hint: 'Nhớ cộng cả D3 có sẵn trong viên canxi hoặc viên tổng hợp. 1 mcg bằng 40 IU. Uống theo tuần thì lấy số viên mỗi tuần chia 7, ví dụ 2 viên mỗi tuần là 0,3 viên mỗi ngày.', units: ['IU', 'mcg'] },
     { id: 'vb', name: 'Vitamin tổng hợp (nhóm B)', color: 'var(--vb)', unit: 'mg', per: 'B6 trong 1 viên', hint: 'Nhóm B chỉ cần mỗi chất quanh 100% NRV. Điều cần canh là B6 không vượt 100 mg mỗi ngày.' },
     { id: 'zn', name: 'Kẽm', color: 'var(--zn)', unit: 'mg', per: 'Kẽm trong 1 viên', hint: 'Ví dụ "kẽm gluconat 70 mg" chỉ có khoảng 10 mg kẽm.' },
     { id: 'vc', name: 'Vitamin C', color: 'var(--vc)', unit: 'mg', per: 'Vitamin C trong 1 viên', hint: 'Một trái ổi vừa đã có khoảng 125 mg, vượt nhu cầu cả ngày.' },
     { id: 'om', name: 'Omega-3', color: 'var(--om)', unit: 'mg', per: 'EPA + DHA trong 1 viên', hint: '1000 mg dầu cá không phải 1000 mg Omega-3. Cộng dòng EPA và DHA trên nhãn.' }
   ];
   const EXAMPLE = { sex: 'nu', age: 'u50', shift: 'hc', vdunit: 'ng', vdLevel: '42',
-    v: { mg: [47, 2], ca: [500, 1], vd: [1000, 1], vb: [2, 1], zn: [10, 1], vc: [0, 0], om: [0, 0] }, vdIU: 'IU', example: true,
+    v: { mg: [['', 47, 2]], ca: [['', 500, 1]], vd: [['', 1000, 1]], vb: [['', 2, 1]], zn: [['', 10, 1]], vc: [], om: [] }, vdIU: 'IU', example: true,
     times: null };
   const DEF = { sex: 'nu', age: 'u50', shift: 'hc', vdunit: 'ng', vdLevel: '', v: {}, vdIU: 'IU', example: false, times: null };
 
@@ -259,7 +266,13 @@ footer { font-size: 15px; color: var(--ink-soft); text-align: center; padding-in
     try { a = JSON.parse(localStorage.getItem(KEY)); } catch (e) {}
     const pick = a && b ? ((a.savedAt || 0) >= (b.savedAt || 0) ? a : b) : (a || b);
     if (!pick || typeof pick !== 'object' || !pick.v) return null;
-    return Object.assign(JSON.parse(JSON.stringify(DEF)), pick);
+    const st = Object.assign(JSON.parse(JSON.stringify(DEF)), pick);
+    Object.keys(st.v || {}).forEach(id => {
+      const v = st.v[id];
+      if (!Array.isArray(v)) st.v[id] = [];
+      else if (v.length && !Array.isArray(v[0])) st.v[id] = [['', v[0], v[1]]];
+    });
+    return st;
   }
   let S = load() || JSON.parse(JSON.stringify(EXAMPLE));
   const save = () => {
@@ -285,15 +298,21 @@ footer { font-size: 15px; color: var(--ink-soft); text-align: center; padding-in
     }
   }
 
-  function getV(id) { const v = S.v[id] || [0, 0]; return [Number(v[0]) || 0, Number(v[1]) || 0]; }
+  // Số gõ vào: nhận cả dấu phẩy và dấu chấm, ví dụ 0,3 hoặc 0.3
+  const num = x => { const v = parseFloat(String(x == null ? '' : x).replace(',', '.')); return v > 0 ? v : 0; };
+  const esc = t => String(t).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+  function rows(id) { if (!S.v[id] || !S.v[id].length) S.v[id] = [['', '', '']]; return S.v[id]; }
+  // Danh sách sản phẩm đã nhập đủ của một vi chất; Vitamin D quy về IU
+  function items(id) {
+    return (S.v[id] || []).map((r, i) => ({ i, name: String(r[0] || '').trim(), per: num(r[1]) * (id === 'vd' && S.vdIU === 'mcg' ? 40 : 1), cnt: num(r[2]) }))
+      .filter(x => x.per > 0 && x.cnt > 0);
+  }
 
   function evaluate(n) {
-    const [per, cnt] = getV(n.id);
-    let perAmt = per;
-    if (n.id === 'vd' && S.vdIU === 'mcg') perAmt = per * 40;
-    const total = perAmt * cnt, r = ref(n.id);
+    const its = items(n.id), r = ref(n.id);
+    const total = its.reduce((a, x) => a + x.per * x.cnt, 0);
     let st = 'none', pill = 'Chưa nhập', msg = 'Gõ hàm lượng trên nhãn và số viên mỗi ngày.';
-    if (cnt > 0 && per > 0) {
+    if (total > 0) {
       if (n.id === 'mg') {
         if (total > 600) { st = 'bad'; pill = 'Đã dư'; msg = 'Chỉ riêng viên đã vượt 600 mg, chưa tính bữa ăn. Giảm số viên.'; }
         else if (total > 400) { st = 'warn'; pill = 'Cần canh'; msg = 'Viên đã trên 400 mg. Nếu ăn nhiều rau xanh, hạt, đậu thì dễ vượt 600 mg; bị phân lỏng là dấu hiệu đã dư.'; }
@@ -303,15 +322,21 @@ footer { font-size: 15px; color: var(--ink-soft); text-align: center; padding-in
         else if (total > 50) { st = 'warn'; pill = 'Cần canh'; msg = 'B6 khá cao. Kiểm tra các viên khác có B6 không để cộng vào.'; }
         else { st = 'ok'; pill = 'Hợp lý'; msg = 'Uống vào bữa sáng. Nước tiểu vàng đậm sau khi uống là bình thường.'; }
       } else {
-        if (total > r.max) { st = 'bad'; pill = 'Vượt ngưỡng'; msg = 'Tổng mỗi ngày vượt mức tối đa ' + r.max + ' ' + n.unit + '. Giảm số viên.'; }
+        if (total > r.max) { st = 'bad'; pill = 'Vượt ngưỡng'; msg = 'Tổng mỗi ngày vượt mức tối đa ' + fmt(r.max) + ' ' + n.unit + '. Giảm số viên.'; }
         else if (total >= r.max * 0.8) { st = 'warn'; pill = 'Gần ngưỡng'; msg = 'Đã gần mức tối đa. Nhớ cộng cả lượng từ bữa ăn và các viên khác.'; }
         else if (total >= r.need[0]) { st = 'ok'; pill = 'Đủ nhu cầu'; msg = n.id === 'ca' ? 'Viên đã đủ nhu cầu; bữa ăn có thêm canxi nên không cần uống nhiều hơn.' : 'Đã đủ nhu cầu mỗi ngày.'; }
         else { st = 'low'; pill = 'Dưới nhu cầu'; msg = n.id === 'ca' ? 'Phần còn thiếu lấy từ bữa ăn: đậu phụ, mè, rau xanh, sữa.' : 'Thấp hơn nhu cầu nền. Phần còn lại lấy từ bữa ăn, hoặc hỏi bác sĩ.'; }
       }
+      if (its.length > 1) msg = 'Tổng của ' + its.length + ' loại. ' + msg;
     }
     let extra = '';
-    if (n.id === 'ca' && perAmt > 500 && cnt > 0) extra = 'Mỗi lần không quá 500 mg: viên của bạn trên 500 mg, nên bẻ nhỏ hoặc chọn viên hàm lượng thấp hơn.';
-    else if (n.id === 'ca' && cnt > 0 && perAmt * Math.ceil(cnt / 2) > 500) extra = 'Lịch bên dưới đang xếp ' + Math.ceil(cnt / 2) + ' viên một lần, tức ' + fmt(perAmt * Math.ceil(cnt / 2)) + ' mg, vượt 500 mg mỗi lần. Giảm số viên hoặc chọn viên hàm lượng thấp hơn.';
+    if (n.id === 'ca' && total > 0) {
+      const big = its.find(x => x.per > 500);
+      const slots = plan().map(sl => sl.filter(t => t.id === 'ca').reduce((a, t) => a + t.amt, 0));
+      const most = Math.max.apply(null, slots);
+      if (big) extra = 'Mỗi lần không quá 500 mg: có viên trên 500 mg, nên bẻ nhỏ hoặc chọn viên hàm lượng thấp hơn.';
+      else if (most > 500) extra = 'Lịch bên dưới có lần uống tới ' + fmt(most) + ' mg canxi, vượt 500 mg mỗi lần. Giảm số viên hoặc chọn viên hàm lượng thấp hơn.';
+    }
     if (n.id === 'mg') extra = 'Có bệnh thận: không tự dùng liều cao, hỏi bác sĩ.';
     if (n.id === 'vd' && total > 0) extra = 'Đang xét nghiệm thiếu: liều cao hơn chỉ dùng theo bác sĩ.';
     if (n.id === 'om') extra = 'Đang dùng thuốc chống đông: hỏi bác sĩ trước.';
@@ -328,17 +353,9 @@ footer { font-size: 15px; color: var(--ink-soft); text-align: center; padding-in
       el.innerHTML = `
         <div class="nut-head"><h3>${n.name}</h3><span class="need" data-need></span></div>
         <div class="nut-body">
-          <div class="inputs">
-            <div class="inp">
-              <label for="per-${n.id}">${n.per}</label>
-              <div class="row"><input id="per-${n.id}" type="number" inputmode="decimal" min="0" step="any"><span class="unit" data-unit>${n.id === 'vd' ? S.vdIU : n.unit}</span></div>
-              ${unitChoice}
-            </div>
-            <div class="inp">
-              <label for="cnt-${n.id}">Số viên mỗi ngày</label>
-              <div class="step"><button type="button" data-d="-1" aria-label="Bớt một viên">−</button><input id="cnt-${n.id}" type="number" inputmode="numeric" min="0" step="1"><button type="button" data-d="1" aria-label="Thêm một viên">+</button></div>
-            </div>
-          </div>
+          ${unitChoice}
+          <div class="prods" data-prods></div>
+          <button class="add" type="button" data-add>+ Thêm một loại ${n.name} khác</button>
           <div class="result"><span class="total" data-total></span><span class="pill" data-pill></span></div>
           <div><div class="meter"><i data-bar></i><b data-mark></b></div><div class="scale"><span>0</span><span data-max></span></div></div>
           <p class="msg" data-msg></p>
@@ -346,28 +363,70 @@ footer { font-size: 15px; color: var(--ink-soft); text-align: center; padding-in
           <p class="tip" data-extra></p>
         </div>`;
       wrap.appendChild(el);
-      const per = el.querySelector('#per-' + n.id), cnt = el.querySelector('#cnt-' + n.id);
-      const v = getV(n.id); per.value = v[0] || ''; cnt.value = v[1] || '';
-      const upd = () => { S.v[n.id] = [per.value, cnt.value]; leaveExample(); renderAll(); };
-      per.addEventListener('input', upd); cnt.addEventListener('input', upd);
-      el.querySelectorAll('.step button').forEach(b => b.addEventListener('click', () => {
-        cnt.value = Math.max(0, (Number(cnt.value) || 0) + Number(b.dataset.d)); upd();
-      }));
+      buildRows(n);
+      el.querySelector('[data-add]').addEventListener('click', () => {
+        rows(n.id).push(['', '', '']); leaveExample(); buildRows(n); renderAll();
+        const ins = el.querySelectorAll('[data-prods] .prod-head input'); ins[ins.length - 1].focus();
+      });
       // Đổi IU <-> mcg thì đổi luôn số đã gõ, để tổng không nhảy sai 40 lần
       el.querySelectorAll('[data-group="vdIU"] .chip').forEach(c => c.addEventListener('click', () => {
-        const to = c.dataset.v, x = Number(per.value);
-        if (to !== S.vdIU && x > 0) per.value = String(Math.round((to === 'mcg' ? x / 40 : x * 40) * 100) / 100);
-        S.vdIU = to; S.v[n.id] = [per.value, cnt.value]; leaveExample(); renderAll();
+        const to = c.dataset.v;
+        if (to !== S.vdIU) rows(n.id).forEach(r => { const x = num(r[1]); if (x) r[1] = String(Math.round((to === 'mcg' ? x / 40 : x * 40) * 100) / 100).replace('.', ','); });
+        S.vdIU = to; leaveExample(); buildRows(n); renderAll();
       }));
     });
   }
+
+  // Mỗi sản phẩm một dòng: tên (không bắt buộc), hàm lượng 1 viên, số viên mỗi ngày (nhận số lẻ như 0,3)
+  function buildRows(n) {
+    const box = document.querySelector('#card-' + n.id + ' [data-prods]'), list = rows(n.id), many = list.length > 1;
+    box.innerHTML = list.map((r, i) => `
+      <div class="prod" data-i="${i}">
+        <div class="prod-head">
+          <input type="text" data-k="0" maxlength="40" placeholder="${many ? 'Tên loại ' + (i + 1) : 'Tên sản phẩm'} (tùy chọn)" aria-label="Tên sản phẩm ${n.name} ${i + 1}">
+          ${many ? `<button class="rm" type="button" aria-label="Bỏ loại ${i + 1}">Bỏ</button>` : ''}
+        </div>
+        <div class="inputs">
+          <div class="inp">
+            <label for="per-${n.id}-${i}">${n.per}</label>
+            <div class="row"><input class="num" id="per-${n.id}-${i}" data-k="1" type="text" inputmode="decimal" autocomplete="off"><span class="unit" data-unit>${n.id === 'vd' ? S.vdIU : n.unit}</span></div>
+          </div>
+          <div class="inp">
+            <label for="cnt-${n.id}-${i}">Số viên mỗi ngày</label>
+            <div class="step"><button type="button" data-d="-1" aria-label="Bớt một viên">−</button><input class="num" id="cnt-${n.id}-${i}" data-k="2" type="text" inputmode="decimal" autocomplete="off"><button type="button" data-d="1" aria-label="Thêm một viên">+</button></div>
+            <p class="tip" data-week hidden></p>
+          </div>
+        </div>
+      </div>`).join('');
+    box.querySelectorAll('.prod').forEach(row => {
+      const i = Number(row.dataset.i), r = list[i];
+      row.querySelectorAll('[data-k]').forEach(inp => {
+        inp.value = r[inp.dataset.k] == null ? '' : r[inp.dataset.k];
+        inp.addEventListener('input', () => { r[inp.dataset.k] = inp.value; leaveExample(); renderAll(); });
+      });
+      const cnt = row.querySelector('[data-k="2"]');
+      row.querySelectorAll('.step button').forEach(b => b.addEventListener('click', () => {
+        cnt.value = String(Math.max(0, Math.round((num(cnt.value) + Number(b.dataset.d)) * 100) / 100)).replace('.', ',');
+        r[2] = cnt.value; leaveExample(); renderAll();
+      }));
+      const rm = row.querySelector('.rm');
+      if (rm) rm.addEventListener('click', () => { list.splice(i, 1); leaveExample(); buildRows(n); renderAll(); });
+    });
+  }
+
+  // Số viên lẻ: ghi thêm quy đổi ra số viên mỗi tuần cho dễ hình dung
+  const perWeek = c => { const w = Math.round(c * 7 * 10) / 10; return w === Math.round(w) ? String(w) : String(w).replace('.', ','); };
 
   function renderCards() {
     N.forEach(n => {
       const el = document.getElementById('card-' + n.id), e = evaluate(n);
       el.querySelector('[data-need]').textContent = e.r.label;
       const unit = n.id === 'vd' ? 'IU' : n.unit;
-      el.querySelector('[data-unit]').textContent = n.id === 'vd' ? S.vdIU : n.unit;
+      el.querySelectorAll('[data-unit]').forEach(u => { u.textContent = n.id === 'vd' ? S.vdIU : n.unit; });
+      el.querySelectorAll('.prod').forEach(row => {
+        const c = num(rows(n.id)[row.dataset.i][2]), w = row.querySelector('[data-week]');
+        w.hidden = !(c > 0 && c !== Math.round(c)); w.textContent = w.hidden ? '' : 'Khoảng ' + perWeek(c) + ' viên mỗi tuần';
+      });
       el.querySelector('[data-total]').innerHTML = e.total ? `${fmt(e.total)} <small>${unit} mỗi ngày${n.id === 'vb' ? ' (B6)' : ''}</small>` : `0 <small>${unit}</small>`;
       const pill = el.querySelector('[data-pill]'); pill.textContent = e.pill; pill.className = 'pill ' + e.st;
       el.querySelector('[data-msg]').textContent = e.msg;
@@ -431,26 +490,57 @@ footer { font-size: 15px; color: var(--ink-soft); text-align: center; padding-in
   };
   const SLOTS = ['Khi thức dậy', 'Bữa 1', 'Bữa 2', 'Bữa phụ chiều', 'Bữa 3', 'Trước khi ngủ'];
   const schedEl = document.getElementById('sched'), gapWarn = document.getElementById('gapWarn');
+  // Tách từng sản phẩm thành từng viên (phần lẻ là một mẩu riêng) để chia vào các lần uống
+  function pieces(id) {
+    const out = [];
+    items(id).forEach(x => {
+      const whole = Math.floor(x.cnt + 1e-9), frac = Math.round((x.cnt - whole) * 100) / 100;
+      for (let k = 0; k < whole; k++) out.push({ i: x.i, name: x.name, n: 1, amt: x.per });
+      if (frac > 0) out.push({ i: x.i, name: x.name, n: frac, amt: x.per * frac });
+    });
+    return out;
+  }
+  // Chia vào hai lần uống sao cho lượng hai lần gần bằng nhau; chỉ một viên thì vào lần đầu
+  function split2(ps) {
+    const a = [], b = []; let sa = 0, sb = 0;
+    ps.slice().sort((x, y) => y.amt - x.amt).forEach(x => { if (sa <= sb) { a.push(x); sa += x.amt; } else { b.push(x); sb += x.amt; } });
+    return [a, b];
+  }
+  // Gộp các viên cùng sản phẩm trong một lần uống thành một thẻ
+  function put(slot, id, ps) {
+    const g = {};
+    ps.forEach(x => { const k = x.i; g[k] = g[k] || { id, i: x.i, name: x.name, n: 0, amt: 0 }; g[k].n += x.n; g[k].amt += x.amt; });
+    Object.keys(g).sort((x, y) => x - y).forEach(k => slot.push(g[k]));
+  }
   function plan() {
     const p = SLOTS.map(() => []);
-    const c = id => getV(id)[1], ok = id => getV(id)[0] > 0 && c(id) > 0;
-    if (ok('mg')) { const n = c('mg'), am = n === 1 ? 1 : Math.floor(n / 2), pm = n - am; if (am) p[0].push(['mg', am]); if (pm) p[5].push(['mg', pm]); }
-    ['vd', 'vb', 'om'].forEach(id => { if (ok(id)) p[1].push([id, c(id)]); });
-    // Vitamin C nên chia nhỏ trong ngày: từ 2 viên thì tách nửa sang Bữa 3
-    if (ok('vc')) { const n = c('vc'), a = Math.ceil(n / 2), b = n - a; p[1].push(['vc', a]); if (b) p[4].push(['vc', b]); }
-    if (ok('ca')) { const n = c('ca'), a = Math.ceil(n / 2), b = n - a; p[2].push(['ca', a]); if (b) p[3].push(['ca', b]); }
-    if (ok('zn')) p[4].push(['zn', c('zn')]);
+    // Magie: sáng liều nhỏ, tối phần còn lại
+    const mg = pieces('mg').sort((x, y) => x.amt - y.amt);
+    if (mg.length) { const am = mg.length === 1 ? 1 : Math.floor(mg.length / 2); put(p[0], 'mg', mg.slice(0, am)); put(p[5], 'mg', mg.slice(am)); }
+    ['vd', 'vb', 'om'].forEach(id => put(p[1], id, pieces(id)));
+    // Vitamin C chia nhỏ trong ngày: Bữa 1 và Bữa 3
+    const vc = split2(pieces('vc')); put(p[1], 'vc', vc[0]); put(p[4], 'vc', vc[1]);
+    // Canxi mỗi lần không quá 500 mg: Bữa 2 và bữa phụ chiều
+    const ca = split2(pieces('ca')); put(p[2], 'ca', ca[0]); put(p[3], 'ca', ca[1]);
+    put(p[4], 'zn', pieces('zn'));
     return p;
   }
   const short = { mg: 'Magie', ca: 'Canxi', vd: 'Vitamin D', vb: 'Nhóm B', zn: 'Kẽm', vc: 'Vitamin C', om: 'Omega-3' };
   const colorOf = id => N.find(n => n.id === id).color;
+  const fmtN = n => String(Math.round(n * 100) / 100).replace('.', ',');
+  // Tên trên lịch: có tên sản phẩm thì ghi tên, nhiều loại không tên thì đánh số
+  function tagName(t) {
+    if (t.name) return t.name.toLowerCase().includes(short[t.id].toLowerCase()) ? t.name : short[t.id] + ' (' + t.name + ')';
+    return items(t.id).length > 1 ? short[t.id] + ' loại ' + (t.i + 1) : short[t.id];
+  }
+  const tagCount = n => n === Math.round(n) ? '× ' + n : '× ' + fmtN(n) + ' (~' + perWeek(n) + ' viên/tuần)';
   function renderSched() {
     const times = S.times || SHIFT[S.shift].slice();
     const p = plan();
     schedEl.innerHTML = SLOTS.map((name, i) => `
       <div class="slot">
         <div><input type="time" id="t-${i}" value="${times[i]}" aria-label="Giờ ${name}"><div class="when">${name}</div></div>
-        <div class="what">${p[i].length ? p[i].map(([id, n]) => `<span class="tag" style="background:${colorOf(id)}">${short[id]} × ${n}</span>`).join('') : '<span class="none">Không có viên nào</span>'}</div>
+        <div class="what">${p[i].length ? p[i].map(t => `<span class="tag" style="background:${colorOf(t.id)}">${esc(tagName(t))} ${tagCount(t.n)}</span>`).join('') : '<span class="none">Không có viên nào</span>'}</div>
       </div>`).join('');
     schedEl.querySelectorAll('input[type=time]').forEach((inp, i) => inp.addEventListener('change', () => {
       const t = S.times || SHIFT[S.shift].slice(); t[i] = inp.value; S.times = t; leaveExample(); save(); checkGaps(t, plan()); showSaved();
@@ -459,7 +549,7 @@ footer { font-size: 15px; color: var(--ink-soft); text-align: center; padding-in
   }
   document.getElementById('copyBtn').addEventListener('click', () => {
     const times = S.times || SHIFT[S.shift].slice(), p = plan();
-    const lines = ['Lịch uống vi chất của tôi'].concat(SLOTS.map((name, i) => p[i].length ? `${times[i]} - ${name}: ${p[i].map(([id, n]) => short[id] + ' x' + n).join(', ')}` : null).filter(Boolean));
+    const lines = ['Lịch uống vi chất của tôi'].concat(SLOTS.map((name, i) => p[i].length ? `${times[i]} - ${name}: ${p[i].map(t => tagName(t) + ' ' + tagCount(t.n).replace('×', 'x')).join(', ')}` : null).filter(Boolean));
     lines.push('Canxi, Magie, Kẽm cách nhau ít nhất 2 tiếng. Cà phê, trà cách 1 tiếng.');
     const text = lines.join('\n'), box = document.getElementById('copyBox'), note = document.getElementById('copyNote');
     const fallback = () => { box.value = text; box.hidden = false; box.focus(); box.select(); note.textContent = 'Chạm giữ vào khung trên, chọn Sao chép, rồi dán vào Ghi chú hoặc Zalo.'; };
@@ -472,7 +562,7 @@ footer { font-size: 15px; color: var(--ink-soft); text-align: center; padding-in
     // Canxi, Magie, Kẽm cách nhau ít nhất 2 tiếng; tính theo thứ tự trong ngày, qua nửa đêm thì cộng 24 giờ
     const base = mins(times[0]);
     const pts = [];
-    p.forEach((items, i) => items.forEach(([id]) => { if (['ca', 'mg', 'zn'].includes(id)) { let m = mins(times[i]); if (m < base) m += 1440; pts.push([m, id, SLOTS[i]]); } }));
+    p.forEach((sl, i) => sl.forEach(({ id }) => { if (['ca', 'mg', 'zn'].includes(id)) { let m = mins(times[i]); if (m < base) m += 1440; pts.push([m, id, SLOTS[i]]); } }));
     pts.sort((a, b) => a[0] - b[0]);
     const bad = [];
     for (let i = 1; i < pts.length; i++) if (pts[i][1] !== pts[i - 1][1] && pts[i][0] - pts[i - 1][0] < 120) bad.push(`${short[pts[i - 1][1]]} (${pts[i - 1][2]}) và ${short[pts[i][1]]} (${pts[i][2]})`);
